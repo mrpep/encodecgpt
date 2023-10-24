@@ -1,0 +1,10 @@
+ENCODECMAE_MODEL='base'
+PROMPTS_PATH='common/encodecmae_base_prompts'
+
+audiogen_tasks.make_prompt:
+    prompt_fn=@audiogen_tasks.encodecmae_prompt
+    model_fn=@audiogen_tasks.load_encodecmae
+    output_path=%PROMPTS_PATH
+audiogen_tasks.load_encodecmae:
+    model=%ENCODECMAE_MODEL
+    device=%DEVICE

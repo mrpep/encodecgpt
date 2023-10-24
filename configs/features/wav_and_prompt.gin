@@ -1,0 +1,11 @@
+encodecmae_tasks.data.DictDataset:
+    out_cols=['wav', 'prompt']
+    preprocessors=[@encodecmae_tasks.features.ProcessorReadAudio, @encodecmae_tasks.features.ProcessorLoadNumpy]
+    
+encodecmae_tasks.features.ProcessorReadAudio:
+    input = 'filename'
+    output = 'wav'
+
+encodecmae_tasks.features.ProcessorLoadNumpy:
+    input = 'prompt'
+    output = 'prompt'

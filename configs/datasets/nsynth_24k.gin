@@ -1,0 +1,7 @@
+NSYNTH_PATH='/mnt/ssd4T/datasets/nsynth_24k'
+load_dataset:
+    reader_fn=[@nsynth_24k/read_audiodir]
+    rename=[{'column': 'partition', 'value':'valid', 'new_value':'validation'}]
+nsynth_24k/read_audiodir:
+    dataset_path=%NSYNTH_PATH
+    regex_groups="nsynth-(?P<partition>\w+)/audio/(?P<instrument_family>\w+)_(?P<instrument_source>\w+)_(?P<instrument_code>\\d+)-(?P<note>\\d+)-(?P<velocity>\\d+)\\.wav"
