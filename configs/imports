@@ -2,8 +2,8 @@ encodecmae.tasks: encodecmae_tasks
 encodecmae.tasks.features: encodecmae_tasks.features
 encodecmae.tasks.utils: encodecmae_tasks.utils
 encodecmae.tasks.data: encodecmae_tasks.data
-audiogen.tasks: audiogen_tasks
-audiogen.tasks.models: audiogen_models
+encodecgpt.tasks: audiogen_tasks
+encodecgpt.tasks.models: audiogen_models
 pytorch_lightning: pl
 pytorch_lightning.Trainer: pl.Trainer
 pytorch_lightning.loggers: pl.loggers
