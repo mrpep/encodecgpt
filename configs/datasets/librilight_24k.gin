@@ -1,0 +1,11 @@
+VAL_SET_SIZE=1000
+
+LIBRILIGHT_PATH='/mnt/ssd4T/datasets/librilight_med_24k'
+load_dataset:
+    reader_fn=[@librilight6k_24k/read_audiodir]
+librilight6k_24k/read_audiodir:
+    dataset_path=%LIBRILIGHT_PATH
+segment_dataset.max_segments=10
+encodecmae_tasks.data.get_dataloaders.split_function=@encodecmae_tasks.data.dataset_random_split
+encodecmae_tasks.data.dataset_random_split:
+    proportions={'train':-1,'validation':%VAL_SET_SIZE}

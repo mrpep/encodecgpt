@@ -1,8 +1,8 @@
-DEVICE=[0]
+DEVICE=[1]
 TRAIN_BATCH_SIZE=48
-TRAIN_DATALOADER_NUM_WORKERS=4
+TRAIN_DATALOADER_NUM_WORKERS=0
 VAL_BATCH_SIZE=16
-VAL_DATALOADER_NUM_WORKERS=4
+VAL_DATALOADER_NUM_WORKERS=0
 INITIAL_CHECKPOINT='last'
 TRAINING_STEPS=500000
 GRAD_ACC=1
@@ -13,13 +13,14 @@ $keys_not_saved=['datasets','dataloaders']
 execute_pipeline:
     tasks = [@encodecmae_tasks.utils.set_seed,
              @encodecmae_tasks.data.load_dataset,
-             @audiogen_tasks.make_prompt,
+             @encodecgpt_tasks.segment_dataset,
+             @encodecgpt_tasks.make_prompt,
              @encodecmae_tasks.data.get_dataloaders,
              @encodecmae_tasks.fit_model]
     execution_order = 'sequential'
 
 get_dataloaders:
-    split_function=@audiogen_tasks.use_partition
+    split_function=@encodecgpt_tasks.use_partition
     dataset_cls={'train': @train/encodecmae_tasks.data.DictDataset, 'validation': @val/encodecmae_tasks.data.DictDataset}
     dataloader_cls={'train': @train/torch.utils.data.DataLoader, 'validation': @val/torch.utils.data.DataLoader}
 

@@ -1,7 +1,7 @@
 MAX_LR=0.0001
 
-encodecmae_tasks.fit_model.model_cls=@audiogen_models.EnCodecGPT
-audiogen_models.EnCodecGPT:
+encodecmae_tasks.fit_model.model_cls=@encodecgpt_models.EnCodecGPT
+encodecgpt_models.EnCodecGPT:
     optimizer=@torch.optim.AdamW
 torch.optim.AdamW:
     lr=%MAX_LR
