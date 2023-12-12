@@ -15,7 +15,10 @@ def segment_dataset(state, segment_size=4, min_segments=1, max_segments=None):
         for idx, row in tqdm(state.dataset_metadata.iterrows()):
             duration = row['duration']
             if duration < segment_size:
-                new_rows.append(row)
+                r = row.to_dict()
+                r['start'] = 0
+                r['end'] = r['frames']
+                new_rows.append(r)
             else:
                 n_segments = max(min_segments,duration//segment_size)
                 if max_segments is not None:
@@ -32,6 +35,7 @@ def segment_dataset(state, segment_size=4, min_segments=1, max_segments=None):
                     new_rows.append(r)
         state.dataset_metadata = pd.DataFrame(new_rows)
         state.segmented = True
+        
     return state
 
 def make_prompt(state, model_fn=None, prompt_fn=None, output_path='prompts',cache=True):
@@ -79,7 +83,7 @@ def load_encodecmae(model='base', device='cuda:0'):
 
 def encodecmae_prompt(state, filename, start=None, end=None):
     features = state.prompt_model.extract_features_from_file(filename, start=start, end=end)
-    return state, features[0].mean(axis=0)
+    return state, features.mean(axis=0)
 
 def use_partition(df):
     partitions = {}
@@ -87,6 +91,6 @@ def use_partition(df):
         partitions[k] = df.loc[df['partition'] == k]
     return partitions
 
-def dynamic_pad_batch(batch):
-    batch = {k: [b[k] for b in batch] for k in batch[0].keys()}
-    from IPython import embed; embed()
+def filter_by_range(df, variable='duration', limit=[1,10000]):
+    df = df.loc[(df[variable]<limit[1]) & (df[variable]>limit[0])]
+    return df

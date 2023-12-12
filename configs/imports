@@ -8,6 +8,7 @@ pytorch_lightning: pl
 pytorch_lightning.Trainer: pl.Trainer
 pytorch_lightning.loggers: pl.loggers
 pytorch_lightning.callbacks: pl.callbacks
+pytorch_lightning.strategies.DDPStrategy: DDPStrategy
 torch.utils.data: torch.utils.data
 torch.optim: torch.optim
 torchmetrics: torchmetrics

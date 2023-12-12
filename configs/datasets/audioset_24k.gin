@@ -1,0 +1,11 @@
+VAL_SET_SIZE=1000
+AUDIOSET_PATH='/mnt/data/audioset_24k'
+load_dataset:
+    reader_fn=[@audioset_24k/read_audiodir]
+    
+audioset_24k/read_audiodir:
+    dataset_path=%AUDIOSET_PATH
+
+encodecmae_tasks.data.get_dataloaders.split_function=@encodecmae_tasks.data.dataset_random_split
+encodecmae_tasks.data.dataset_random_split:
+    proportions={'train':-1,'validation':%VAL_SET_SIZE}
