@@ -1,13 +1,15 @@
-DEVICE=[1]
-TRAIN_BATCH_SIZE=48
-TRAIN_DATALOADER_NUM_WORKERS=0
-VAL_BATCH_SIZE=16
-VAL_DATALOADER_NUM_WORKERS=0
+DEVICE=[0,1]
+TRAIN_BATCH_SIZE=12
+TRAIN_DATALOADER_NUM_WORKERS=8
+VAL_BATCH_SIZE=12
+VAL_DATALOADER_NUM_WORKERS=8
 INITIAL_CHECKPOINT='last'
 TRAINING_STEPS=500000
-GRAD_ACC=1
+GRAD_ACC=2
 CHECKPOINT_INTERVAL=10000
 PRECISION=16
+AUDIO_DURATION=10
+FILTER_AUDIO_LENGTH=[1,10000]
 
 $keys_not_saved=['datasets','dataloaders']
 execute_pipeline:
@@ -28,12 +30,12 @@ train/torch.utils.data.DataLoader:
     shuffle=True
     batch_size=%TRAIN_BATCH_SIZE
     num_workers=%TRAIN_DATALOADER_NUM_WORKERS
-
+    collate_fn=@encodecmae_tasks.data.dynamic_pad_batch
 val/torch.utils.data.DataLoader:
     shuffle=False
     batch_size=%VAL_BATCH_SIZE
     num_workers=%VAL_DATALOADER_NUM_WORKERS
-
+    collate_fn=@encodecmae_tasks.data.dynamic_pad_batch
 encodecmae_tasks.fit_model:
     trainer_cls=@pl.Trainer
     checkpoint_folder='checkpoints'
@@ -50,7 +52,7 @@ pl.Trainer:
     val_check_interval=%CHECKPOINT_INTERVAL
     precision=%PRECISION
     check_val_every_n_epoch=None
-
+    strategy=@DDPStrategy()
 pl.callbacks.ModelCheckpoint:
     dirpath=%OUTPUT_DIR
     every_n_train_steps=%CHECKPOINT_INTERVAL
@@ -59,4 +61,8 @@ pl.callbacks.ModelCheckpoint:
 pl.loggers.CSVLogger:
     save_dir=%OUTPUT_DIR
     name='logs'
+DDPStrategy.find_unused_parameters=True
 
+encodecgpt_tasks.segment_dataset.segment_size=%AUDIO_DURATION
+encodecmae_tasks.data.load_dataset.filters=[@encodecmae_tasks.data.remove_long_audios]
+encodecgpt_tasks.filter_by_range.limit=%FILTER_AUDIO_LENGTH
